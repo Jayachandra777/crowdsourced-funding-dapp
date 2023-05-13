@@ -757,7 +757,7 @@ function App() {
     
     
 
-    Okay, here is the fifth page of the tutorial:
+  
 
 # Creating the user interface
 
@@ -846,16 +846,68 @@ function App() {
     return new Date(timestamp * 1000).toLocaleString();
   }
 
-  // Define helper functions for connecting to user's wallet and updating network
-  
-  
-  
-  
-  
-  
- Here is the rest of the code for the bookTicket function:
 
-```javascript
+  // Define helper functions for connecting to user's wallet and updating network
+  function connectWallet() {
+    performActions((kit) => {
+      kit.connect();
+    });
+  }
+
+  function updateNetwork() {
+    performActions(async (kit) => {
+      await kit.setNetwork(network);
+    });
+  }
+
+  // Define helper functions for calling the contract functions
+  async function createTicket() {
+    // Validate user input
+    if (!route || !price) {
+      alert("Please enter a valid route and price");
+      return;
+    }
+
+    // Convert price to wei
+    let priceInWei = web3.utils.toWei(price);
+
+    // Call the createTicket function from the trainTicket contract
+    await trainTicket.methods.createTicket(route, priceInWei).send({ from: address });
+
+    // Clear user input
+    setRoute("");
+    setPrice("");
+
+    // Fetch the updated tickets list
+    fetchTickets();
+  }
+
+  async function bookTicket() {
+    // Validate user input
+    if (!id) {
+      alert("Please enter a valid ticket id");
+      return;
+    }
+
+    // Get the ticket from the tickets list by its id
+    let ticket = tickets.find((t) => t.id === id);
+
+    // Check if the ticket is available
+    if (ticket.status !== "Available") {
+      alert("Ticket is not available");
+      return;
+    }
+
+    // Approve the trainTicket contract to spend cUSD on behalf of the user
+    await cUSD.methods.approve(trainTicket.address, ticket.price).send({ from: address });
+
+    // Call the bookTicket function from the trainTicket contract
+    await trainTicket.methods.bookTicket(id).send({ from: address });
+
+    // Clear user input
+    setId("");
+
+   
     // Fetch the updated tickets list
     fetchTickets();
   }
@@ -905,16 +957,7 @@ function App() {
       return;
     }
 
-    // Call the resellTicket function from the trainTicket contract
-    
-    
-    
-    
-    
-    
-Here is the rest of the code for the resellTicket function:
-
-```javascript
+  
     // Call the resellTicket function from the trainTicket contract
     await trainTicket.methods.resellTicket(id, newPriceInWei).send({ from: address });
 
@@ -958,7 +1001,7 @@ Here is the rest of the code for the resellTicket function:
   }, []);
 
   // Return the JSX for rendering the app component
-  return (
+  return 
   
   
   
@@ -968,8 +1011,7 @@ Here is the rest of the code for the resellTicket function:
   
   
   
-  
-  Okay, here is the sixth and final page of the tutorial:
+
 
 # Finishing the user interface
 
@@ -1094,15 +1136,7 @@ return (
           </select>
         </div>
       </header>
-      <main className="p-4 space
-      
-      
-      
-      
-      
-      Here is the rest of the code for the JSX:
 
-```jsx
       <main className="p-4 space-y-8">
         <section className="flex flex-col items-center space-y-4">
           <h2 className="text-2xl font-bold text-celo-green">Create a new ticket</h2>
@@ -1219,7 +1253,4 @@ That's it! You have successfully created and styled the user interface for your 
   
   
     
-    
-  
-    
-    
+ 
