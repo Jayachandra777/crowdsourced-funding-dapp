@@ -1,4 +1,4 @@
-Hello, this is Bing. I can help you create a tutorial on dapp development of train ticket booking app in celo blockchain. Here is the first page of the tutorial:
+Hello, this is jayachandra. I can help you create a tutorial on dapp development of train ticket booking app in celo blockchain. Here is the first page of the tutorial:
 
 # Introduction
 
@@ -62,21 +62,7 @@ This will create a basic hardhat project structure with some sample files.
 
 8. Connect your project to the celo testnet (Alfajores). You can do this by editing the `hardhat.config.js` file in your project folder and adding this code:
 
-```javascript
-require("@nomiclabs/hardhat-waffle");
-const { ALFAJORES_PRIVATE_KEY } = process.env;
 
-module.exports = {
-  solidity: "0.8.4",
-  networks: {
-    alfajores:
-
-Source: Conversation with Bing, 13/5/2023
-(1) How to become a dApp Developer? - Blockchain Council. https://www.blockchain-council.org/development/how-to-become-a-dapp-developer/.
-(2) Building Decentralized Applications on Celo, Best Practices for DApp .... https://docs.celo.org/blog/tutorials/building-decentralized-applications-on-celo-best-practices.
-(3) Building Your Smart Contract Web Dapp with Celo-Composer. https://docs.celo.org/blog/tutorials/building-your-first-smart-contract-web-dapp-with-celo-composer.
-(4) Build a dapp for buying and selling unique gadgets on celo blockchain. https://docs.celo.org/es/blog/tutorials/build-a-dapp-for-buying-and-selling-unique-gadgets-on-celo-blockchain.
-Here is the rest of the code for the `hardhat.config.js` file:
 
 ```javascript
 require("@nomiclabs/hardhat-waffle");
@@ -114,16 +100,13 @@ This will create a basic react app structure with some sample files.
 
 10. Configure tailwind for your frontend. You can do this by following the instructions here: https://tailwindcss.com/docs/guides/create-react-app
 
-That's it! You have successfully set up the development environment for your train ticket booking dapp. In the next page, we will start writing the smart contracts for the dapp logic and data. Stay tuned! 😊
+That's it! You have successfully set up the development environment for your train ticket booking dapp. 
 
 
 
 
 
-
-
-Okay, here is the second page of the tutorial:
-
+ 
 # Writing the smart contracts
 
 In this page, we will write the smart contracts for the train ticket booking dapp. We will use Solidity as the programming language and Remix IDE as the development tool. We will also use hardhat for testing and deploying our contracts.
@@ -198,15 +181,7 @@ contract TrainTicket {
     // Define TicketCancelled event
     event TicketCancelled(uint256 indexed id, address owner);
 
-    // Define TicketResold event
-    
-    
-    
-    
-    
-    Here is the rest of the code for the TrainTicket contract:
-
-```solidity
+  
 // Define TicketResold event
     event TicketResold(uint256 indexed id, address seller, address buyer, uint256 newPrice);
 
@@ -316,14 +291,8 @@ contract TrainTicket {
 }
 ```
 
-That's it! You have successfully written the TrainTicket contract for your dapp. In the next page, we will test and deploy this contract using hardhat. Stay tuned! 😊
+That's it! You have successfully written the TrainTicket contract for your dapp. In the next step we will test and deploy this contract using hardhat. Stay tuned! 😊
 
-
-
-
-
-
-Okay, here is the third page of the tutorial:
 
 # Testing and deploying the smart contracts
 
@@ -418,16 +387,7 @@ describe("TrainTicket", function () {
     expect(ticket.owner).to.equal(owner.address);
     expect(ticket.status).to.equal(0); // Available
 
-    // Expect that a TicketCreated event is emitted with the correct values
-    
-    
-    
-    
-    
-    
-    Here is the rest of the code for the createTicket function test:
 
-```javascript
     // Expect that a TicketCreated event is emitted with the correct values
     await expect(trainTicket.createTicket(ROUTE, PRICE))
       .to.emit(trainTicket, "TicketCreated")
@@ -482,15 +442,7 @@ describe("TrainTicket", function () {
     // Calculate the refund amount (minus the cancellation fee)
     let refund = (PRICE * (100 - CANCELLATION_FEE)) / 100;
 
-    // Expect that the cUSD balance of the buyer is increased by the refund amount
-    
-    
-    
-    
-    
-Here is the rest of the code for the createTicket function test:
 
-```javascript
     // Expect that a TicketCreated event is emitted with the correct values
     await expect(trainTicket.createTicket(ROUTE, PRICE))
       .to.emit(trainTicket, "TicketCreated")
@@ -545,14 +497,55 @@ Here is the rest of the code for the createTicket function test:
     // Calculate the refund amount (minus the cancellation fee)
     let refund = (PRICE * (100 - CANCELLATION_FEE)) / 100;
 
+   
     // Expect that the cUSD balance of the buyer is increased by the refund amount
-    
-    
-    
-    
-    Here is the rest of the code for the withdrawBalance function test:
+    expect(await getBalance(buyer.address)).to.equal(ethers.utils.parseEther("999"));
 
-```javascript
+    // Expect that the cUSD balance of the contract is decreased by the refund amount
+    expect(await getBalance(trainTicket.address)).to.equal(ethers.utils.parseEther("1"));
+
+    // Expect that a TicketCancelled event is emitted with the correct values
+    await expect(cancelBooking(0))
+      .to.emit(trainTicket, "TicketCancelled")
+      .withArgs(0, buyer.address);
+  });
+
+  // Test the resellTicket function
+  it("should resell a ticket with the given id and new price", async function () {
+    // Call the createTicket function with ROUTE and PRICE as arguments
+    await trainTicket.createTicket(ROUTE, PRICE);
+
+    // Call the bookTicket function with id (0) as argument
+    await bookTicket(0);
+
+    // Call the resellTicket function with id (0) and NEW_PRICE as arguments
+    await resellTicket(0);
+
+    // Get the ticket from the tickets mapping by its id (0)
+    let ticket = await trainTicket.tickets(0);
+
+    // Expect that the ticket price and status are updated
+    expect(ticket.price).to.equal(NEW_PRICE);
+    expect(ticket.status).to.equal(0); // Available
+
+    // Expect that the cUSD balance of the buyer is increased by the original ticket price
+    expect(await getBalance(buyer.address)).to.equal(ethers.utils.parseEther("1000"));
+
+    // Expect that the cUSD balance of the contract is decreased by the original ticket price
+    expect(await getBalance(trainTicket.address)).to.equal(ethers.utils.parseEther("0"));
+
+    // Expect that a TicketResold event is emitted with the correct values
+    await expect(resellTicket(0))
+      .to.emit(trainTicket, "TicketResold")
+      .withArgs(0, buyer.address, address(0), NEW_PRICE);
+  });
+
+  // Test the withdrawBalance function
+  it("should withdraw the cUSD balance of the sender", async function () {
+    // Call the createTicket function with ROUTE and PRICE as arguments
+    await trainTicket.createTicket(ROUTE, PRICE);
+
+   
     // Call the bookTicket function with id (0) as argument
     await bookTicket(0);
 
@@ -577,17 +570,8 @@ Here is the rest of the code for the createTicket function test:
 });
 ```
 
-That's it! You have successfully written unit tests for your TrainTicket contract. In the next page, we will run these tests and deploy our contract to the celo testnet. Stay tuned! 😊
+That's it! You have successfully written unit tests for your TrainTicket contract. In the next step, we will run these tests and deploy our contract to the celo testnet. Stay tuned! 😊
 
-
-
-
-
-
-
-
-
-Okay, here is the fourth page of the tutorial:
 
 # Running and deploying the smart contracts
 
@@ -678,11 +662,6 @@ waiting for tx 0x9f7f8c8a9c4d7f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f...
 "TrainTicket" deployed at 0x123456789012345678901234567890123
 
 
-
-
-
-
-Okay, here is the fifth page of the tutorial:
 
 # Creating the user interface
 
