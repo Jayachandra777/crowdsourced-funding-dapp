@@ -660,106 +660,10 @@ Nothing to compile
 deploying "TrainTicket" (tx: 0x9f7f8c8a9c4d7f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f...) ...
 waiting for tx 0x9f7f8c8a9c4d7f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f...
 "TrainTicket" deployed at 0x123456789012345678901234567890123
-
-
-
-# Creating the user interface
-
-In this page, we will create the user interface for our train ticket booking dapp. We will use React as the frontend library and Tailwind as the styling framework. We will also use celo-sdk as the web3 library for interacting with the celo network and our smart contract.
-
-## Setting up the frontend
-
-To set up the frontend, we will do the following steps:
-
-1. Create a new file called `.env` in our frontend project folder and add this line:
-
-```bash
-REACT_APP_TRAINTICKET_ADDRESS=0x123456789012345678901234567890123
 ```
 
-This will store the address of our deployed TrainTicket contract as an environment variable that we can access in our React app.
 
-2. Create a new file called `celo.js` in the `src` folder of our frontend project folder. This file will contain the code for initializing and exporting the celo-sdk objects that we will use in our app. We can write something like this:
-
-```javascript
-// Import celo-sdk
-import { newKitFromWeb3 } from "@celo/contractkit";
-import Web3 from "web3";
-import { useContractKit } from "@celo-tools/use-contractkit";
-
-// Define web3 object
-const web3 = new Web3(window.ethereum);
-
-// Define celoKit object
-const celoKit = newKitFromWeb3(web3);
-
-// Define cUSD contract object
-const cUSD = await celoKit.contracts.getStableToken();
-
-// Define TrainTicket contract object
-const TrainTicket = require("../artifacts/contracts/TrainTicket.sol/TrainTicket.json");
-const trainTicketAddress = process.env.REACT_APP_TRAINTICKET_ADDRESS;
-const trainTicket = new web3.eth.Contract(TrainTicket.abi, trainTicketAddress);
-
-// Export celo-sdk objects
-export { web3, celoKit, cUSD, trainTicket };
-```
-
-This file will import celo-sdk and web3 libraries and use them to create and export four objects:
-
-- `web3`: This is a web3 object that will allow us to interact with the Ethereum-compatible layer of the celo network.
-- `celoKit`: This is a celoKit object that will allow us to interact with the core contracts of the celo platform, such as cUSD and CELO.
-- `cUSD`: This is a cUSD contract object that will allow us to interact with the cUSD token contract on the celo network.
-- `trainTicket`: This is a TrainTicket contract object that will allow us to interact with our deployed TrainTicket contract on the celo network.
-
-We will also use a React hook called `useContractKit` from a library called `@celo-tools/use-contractkit`. This hook will allow us to easily connect our app to the user's celo wallet and access their account information.
-
-3. Create a new file called `App.js` in the `src` folder of our frontend project folder. This file will contain the code for rendering our app's main component. We can write something like this:
-
-```javascript
-// Import React
-import React from "react";
-
-// Import Tailwind
-import "./index.css";
-
-// Import celo-sdk objects
-import { web3, celoKit, cUSD, trainTicket } from "./celo";
-
-// Import useContractKit hook
-import { useContractKit } from "@celo-tools/use-contractkit";
-
-// Define App component
-function App() {
-  // Use useContractKit hook to get access to user's account and network
-  const { address, network, performActions } = useContractKit();
-
-  // Define state variables for storing user input and contract data
-  const [route, setRoute] = React.useState("");
-  const [price, setPrice] = React.useState("");
-  const [id, setId] = React.useState("");
-  const [newPrice, setNewPrice] = React.useState("");
-  const [tickets, setTickets] = React.useState([]);
-
-  // Define helper functions for formatting numbers and dates
-  function formatNumber(number) {
-    return new Intl.NumberFormat().format(number);
-  }
-
-  function formatDate(timestamp) {
-    return new Date(timestamp * 1000).toLocaleString();
-  }
-
-  // Define helper functions for connecting to user's wallet and updating network
-
-    
-    
-    
-    
-
-  
-
-# Creating the user interface
+  # Creating the user interface
 
 In this page, we will create the user interface for our train ticket booking dapp. We will use React as the frontend library and Tailwind as the styling framework. We will also use celo-sdk as the web3 library for interacting with the celo network and our smart contract.
 
